@@ -39,6 +39,21 @@ startup
         return hash;
     };
     vars.calcModuleHash = calcModuleHash;
+
+    Func<long, byte[], bool> beginsWithBytes = (l, prefix) => {
+        byte[] longBytes = BitConverter.GetBytes(l);
+        Array.Reverse(longBytes); // Weird endian stuff
+        // vars.logDebug("longBytes: " + BitConverter.ToString(longBytes));
+        int i = 0;
+        foreach (byte b in prefix) {
+            if ( b != longBytes[i] ) return false;
+            i++;
+        }
+        return true;
+    };
+    vars.beginsWithBytes = beginsWithBytes;
+
+    settings.Add("RecruitmentSplit", false, "Split for recruitment missions");
 }
 
 init
@@ -50,6 +65,7 @@ init
     {
         case "5048291D38DAC9E5988DC4572AE8717A":
             version = "v1.2.40";
+            vars.recruitPrefix = new byte[] {0xC8, 0xA1, 0x7D}; // The first 3 bytes of a recruitment mission ID converted to hex
             break;
         default:
             throw new NotImplementedException("Unrecognized hash: " + hash);
@@ -64,6 +80,22 @@ isLoading
 }
 
 split {
-    if (version != "" && !(old.missionId1 == -1 || old.missionId2 == -1))
-        return old.missionId1 != current.missionId1 || old.missionId2 != current.missionId2;
+    if (version != "") {
+        // Collapse DX11/DX12 variables to one variable
+        long oldMissionId, currentMissionId;
+        oldMissionId = old.missionId1 != 0  ? old.missionId1 : old.missionId2;
+        currentMissionId = current.missionId1 != 0 ? current.missionId1 : current.missionId2;
+
+        // vars.logDebug("oldMissionId: " + oldMissionId);
+        // vars.logDebug("currentMissionId: " + currentMissionId);
+        
+        // If the settings disabled splits on recruitment, check if the old or current ID is a recruitment ID and short circuit
+        if (!settings["RecruitmentSplit"] && (vars.beginsWithBytes(currentMissionId, vars.recruitPrefix) || vars.beginsWithBytes(oldMissionId, vars.recruitPrefix))) {
+            // vars.logDebug("This is a recruitment mission, skipping...");
+            return;
+        }
+         // Don't split coming from a null mission
+        if (oldMissionId != -1)
+            return oldMissionId != currentMissionId;
+    }
 }
