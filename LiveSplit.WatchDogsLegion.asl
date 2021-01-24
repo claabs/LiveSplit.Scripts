@@ -13,8 +13,8 @@ state("WatchDogsLegion", "v1.2.40")
 {
     int loading1 : "DuniaDemo_clang_64_dx11.dll", 0xB0664D4;
     int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xB0F4524;
-    int missionId1 : "DuniaDemo_clang_64_dx11.dll", 0x0B0AF8D8, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90;
-    int missionId2 : "DuniaDemo_clang_64_dx12.dll", 0x0B21F420, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90;
+    long missionId1 : "DuniaDemo_clang_64_dx11.dll", 0x0B0AF8D8, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90;
+    long missionId2 : "DuniaDemo_clang_64_dx12.dll", 0x0B21F420, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90;
 }
 
 startup
@@ -64,6 +64,6 @@ isLoading
 }
 
 split {
-    if (version != "")
+    if (version != "" && !(old.missionId1 == -1 || old.missionId2 == -1))
         return old.missionId1 != current.missionId1 || old.missionId2 != current.missionId2;
 }

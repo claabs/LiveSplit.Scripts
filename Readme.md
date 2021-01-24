@@ -51,18 +51,17 @@ If the load remover is not working, you may be on an unsupported version of the 
 
 Finding the mission ID values from scratch is a pain, so hopefull the following ones stick around through updates:
 
-| Selected Mission     | Mission ID |
-|----------------------|------------|
-| None                 | 4294967295 |
-| Initiate Sequence    | 1202097135 |
-| Inside Albion        | 359045896  |
-| The Whistleblower    | 4108783168 |
-| Crashing the Auction | 900140611  |
-| Initiate Sequence    | 1202097135 |
+| Selected Mission     | Mission ID           |
+|----------------------|----------------------|
+| None                 | -1                   |
+| Initiate Sequence    | -1860909611898991633 |
+| Inside Albion        | -1860909419468514552 |
+| The Whistleblower    | -1860909604697338304 |
+| Crashing the Auction | -1860909603611013565 |
 
 1. Launch the game into DX11 mode
 1. Attach to `WatchDogsLegion.exe`
-1. Load into a dual mission chapter and scan for a **4 Byte** with the appropriate mission ID value from the above table
+1. Load into a dual mission chapter and scan for a **8 Byte** with the appropriate mission ID value from the above table
 1. Select/deselect missions (right click) in the menu while searching for values until you get about 9 addresses
 1. Generate a pointermap
 1. Pointerscan each address until you get one that only returns one result; it's usually the last one
