@@ -79,16 +79,17 @@ Note that the deed count doesn't increment after Clarion Call. In that case, we 
 | Clarion Call                  | 5          |
 | Reporting for Duty            | 5          |
 | Digging up the past           | 6          |
-| Whistleblower                 | 19         |
+| The Whistleblower             | 19         |
 | Espionage 101                 | 20         |
+| Honey Trap                    | 21         |
 | The Face of the Enemy         | 36         |
 
-The numbers above are from my practice save files, but it may vary depending on what you accomplished in your practice saves.
+The numbers above are from my practice save files, but it may vary depending on what you accomplished in your practice saves. Keep in mind that a searched memory address only lasts until you exit to main menu, which means you can't use loading save files to find the address.
 
 1. Launch the game into DX11 mode
 1. Attach to `WatchDogsLegion.exe`
-1. Load into a *Restart DedSec* and scan for a **4 Byte** with the appropriate deed count value from the above table
-1. Progress through deeds and increment your search as needed. If you know its value in later save files, just load later saves
+1. Load into a late *The Whistleblower* save and scan for a **4 Byte** with the appropriate deed count value from the above table
+1. Progress through the next two missions incrementing your search, and unchanged repeat filtering as needed.
 1. Generate a pointermap and save it
 1. Pointerscan for the address and save it
 1. Restart the game and repeat the process, comparing the pointerscan results with the previous

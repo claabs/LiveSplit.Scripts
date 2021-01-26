@@ -16,7 +16,7 @@ state("WatchDogsLegion", "v1.2.40")
     long missionId1 : "DuniaDemo_clang_64_dx11.dll", 0x0B0AF8D8, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90;
     long missionId2 : "DuniaDemo_clang_64_dx12.dll", 0x0B21F420, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90;
     int deedCount1 : "DuniaDemo_clang_64_dx11.dll", 0x0AFA8940, 0x30, 0x198;
-    int deedCount2 : "DuniaDemo_clang_64_dx12.dll", 0x0AFA8940, 0x30, 0x198; // TODO
+    int deedCount2 : "DuniaDemo_clang_64_dx12.dll", 0x0B036950, 0x30, 0x198;
 }
 
 startup
