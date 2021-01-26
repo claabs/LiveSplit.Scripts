@@ -58,8 +58,6 @@ startup
         return oldCount + 1 == currentCount && !vars.isMiddleLightASpark(oldCount, currentCount);
     };
     vars.isValidDeedIncrement = isValidDeedIncrement;
-
-    settings.Add("RecruitmentSplit", false, "Split for recruitment missions");
 }
 
 init
