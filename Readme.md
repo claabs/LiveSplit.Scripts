@@ -61,13 +61,48 @@ If the load remover is not working, you may be on an unsupported version of the 
 1. Add the address to the ASL scruot
 1. Repeat for DX12.
 
-#### Autosplit
+#### Deed count
+
+The deed count is incremented whenever a mission is completed, a borough task is completed, or during some other various events.
+A 100% file has about 500 deeds. The Any% route should have 38 at the end.
+
+We can generally use deed count to track our mission progress through the run, as long as we don't improvise too much.
+
+Note that the deed count doesn't increment after Clarion Call. In that case, we need to check the mission ID to split.
+
+| Active mission in route order | Deed count |
+|-------------------------------|------------|
+| Operation Westminster         | null       |
+| Restart DedSec                | 2          |
+| Light a Spark (1)             | 3          |
+| Light a Spark (2)             | 4          |
+| Clarion Call                  | 5          |
+| Reporting for Duty            | 5          |
+| Digging up the past           | 6          |
+| Whistleblower                 | 19         |
+| Espionage 101                 | 20         |
+| The Face of the Enemy         | 36         |
+
+The numbers above are from my practice save files, but it may vary depending on what you accomplished in your practice saves.
+
+1. Launch the game into DX11 mode
+1. Attach to `WatchDogsLegion.exe`
+1. Load into a *Restart DedSec* and scan for a **4 Byte** with the appropriate deed count value from the above table
+1. Progress through deeds and increment your search as needed. If you know its value in later save files, just load later saves
+1. Generate a pointermap and save it
+1. Pointerscan for the address and save it
+1. Restart the game and repeat the process, comparing the pointerscan results with the previous
+1. Find a pointer with only two offsets and save it
+1. Repeat for DX12.
+
+#### Mission ID
 
 Finding the mission ID values from scratch is a pain, so hopefull the following ones stick around through updates:
 
-| Selected Mission     | Mission ID           |
+| Selected mission     | Mission ID           |
 |----------------------|----------------------|
 | None                 | -1                   |
+| Clarion Call         | -2314395300743091072 |
 | Initiate Sequence    | -1860909611898991633 |
 | Inside Albion        | -1860909419468514552 |
 | The Whistleblower    | -1860909604697338304 |

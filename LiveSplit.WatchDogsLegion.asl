@@ -15,6 +15,8 @@ state("WatchDogsLegion", "v1.2.40")
     int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xB0F4524;
     long missionId1 : "DuniaDemo_clang_64_dx11.dll", 0x0B0AF8D8, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90;
     long missionId2 : "DuniaDemo_clang_64_dx12.dll", 0x0B21F420, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90;
+    int deedCount1 : "DuniaDemo_clang_64_dx11.dll", 0x0AFA8940, 0x30, 0x198;
+    int deedCount2 : "DuniaDemo_clang_64_dx12.dll", 0x0AFA8940, 0x30, 0x198; // TODO
 }
 
 startup
@@ -40,18 +42,22 @@ startup
     };
     vars.calcModuleHash = calcModuleHash;
 
-    Func<long, byte[], bool> beginsWithBytes = (l, prefix) => {
-        byte[] longBytes = BitConverter.GetBytes(l);
-        Array.Reverse(longBytes); // Weird endian stuff
-        // vars.logDebug("longBytes: " + BitConverter.ToString(longBytes));
-        int i = 0;
-        foreach (byte b in prefix) {
-            if ( b != longBytes[i] ) return false;
-            i++;
-        }
-        return true;
+    Func<long, long, bool> isClarionCall = (oldId, currentId) => {
+        // Clarion Call doesn't increment the deed count, so we have this special case
+        return oldId == vars.clarionCallId && currentId == -1;
     };
-    vars.beginsWithBytes = beginsWithBytes;
+    vars.isClarionCall = isClarionCall;
+
+    Func<int, int, bool> isMiddleLightASpark = (oldCount, currentCount) => {
+        // Each objective in Light a Spark increments the deed count, so we need to ignore it
+        return oldCount == 3 && currentCount == 4;
+    };
+    vars.isMiddleLightASpark = isMiddleLightASpark;
+
+    Func<int, int, bool> isValidDeedIncrement = (oldCount, currentCount) => {
+        return oldCount + 1 == currentCount && !vars.isMiddleLightASpark(oldCount, currentCount);
+    };
+    vars.isValidDeedIncrement = isValidDeedIncrement;
 
     settings.Add("RecruitmentSplit", false, "Split for recruitment missions");
 }
@@ -65,7 +71,7 @@ init
     {
         case "5048291D38DAC9E5988DC4572AE8717A":
             version = "v1.2.40";
-            vars.recruitPrefix = new byte[] {0xC8, 0xA1, 0x7D}; // The first 3 bytes of a recruitment mission ID converted to hex
+            vars.clarionCallId = -2314395300743091072l;
             break;
         default:
             throw new NotImplementedException("Unrecognized hash: " + hash);
@@ -82,20 +88,18 @@ isLoading
 split {
     if (version != "") {
         // Collapse DX11/DX12 variables to one variable
+        int oldDeedCount, currentDeedCount;
+        oldDeedCount = old.deedCount1 != 0  ? old.deedCount1 : old.deedCount2;
+        currentDeedCount = current.deedCount1 != 0 ? current.deedCount1 : current.deedCount2;
+
         long oldMissionId, currentMissionId;
         oldMissionId = old.missionId1 != 0  ? old.missionId1 : old.missionId2;
         currentMissionId = current.missionId1 != 0 ? current.missionId1 : current.missionId2;
 
-        // vars.logDebug("oldMissionId: " + oldMissionId);
-        // vars.logDebug("currentMissionId: " + currentMissionId);
+        // vars.logDebug("oldDeedCount: " + oldDeedCount);
+        // vars.logDebug("currentDeedCount: " + currentDeedCount);
         
-        // If the settings disabled splits on recruitment, check if the old or current ID is a recruitment ID and short circuit
-        if (!settings["RecruitmentSplit"] && (vars.beginsWithBytes(currentMissionId, vars.recruitPrefix) || vars.beginsWithBytes(oldMissionId, vars.recruitPrefix))) {
-            // vars.logDebug("This is a recruitment mission, skipping...");
-            return;
-        }
-         // Don't split coming from a null mission
-        if (oldMissionId != -1)
-            return oldMissionId != currentMissionId;
+        if (vars.isValidDeedIncrement(oldDeedCount, currentDeedCount) || vars.isClarionCall(oldMissionId, currentMissionId))
+            return true;
     }
 }
