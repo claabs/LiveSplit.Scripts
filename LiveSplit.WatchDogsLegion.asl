@@ -1,7 +1,7 @@
 /* IMPORTANT:
 You need to add -BattlEyeLauncher to your launch options (in uPlay/Epic Games/shortcut) so the memory can be read.
 This disables BattlEye (and online MP).
-See README.d for more information.
+See Readme.md for more information.
 */
 
 state("WatchDogsLegion")
@@ -15,8 +15,8 @@ state("WatchDogsLegion", "v1.2.40")
     int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xB0F4524;
     long missionId1 : "DuniaDemo_clang_64_dx11.dll", 0x0B0AF8D8, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90;
     long missionId2 : "DuniaDemo_clang_64_dx12.dll", 0x0B21F420, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90;
-    int deedCount1 : "DuniaDemo_clang_64_dx11.dll", 0x0AFA8940, 0x30, 0x198;
-    int deedCount2 : "DuniaDemo_clang_64_dx12.dll", 0x0B036950, 0x30, 0x198;
+    int missionCount1: "DuniaDemo_clang_64_dx11.dll", 0x0AFD9CA8, 0xE4;
+    int missionCount2: "DuniaDemo_clang_64_dx12.dll", 0x0AFD9CA8, 0xE4; // TODO
 }
 
 startup
@@ -48,16 +48,11 @@ startup
     };
     vars.isClarionCall = isClarionCall;
 
-    Func<int, int, bool> isMiddleLightASpark = (oldCount, currentCount) => {
-        // Each objective in Light a Spark increments the deed count, so we need to ignore it
-        return oldCount == 3 && currentCount == 4;
+    Func<int, int, bool> isValidCountIncrement = (oldCount, currentCount) => {
+        // The mission count increments to 1 when loading a save, so ignore that
+        return oldCount + 1 == currentCount && currentCount != 1;
     };
-    vars.isMiddleLightASpark = isMiddleLightASpark;
-
-    Func<int, int, bool> isValidDeedIncrement = (oldCount, currentCount) => {
-        return oldCount + 1 == currentCount && !vars.isMiddleLightASpark(oldCount, currentCount);
-    };
-    vars.isValidDeedIncrement = isValidDeedIncrement;
+    vars.isValidCountIncrement = isValidCountIncrement;
 }
 
 init
@@ -86,18 +81,18 @@ isLoading
 split {
     if (version != "") {
         // Collapse DX11/DX12 variables to one variable
-        int oldDeedCount, currentDeedCount;
-        oldDeedCount = old.deedCount1 != 0  ? old.deedCount1 : old.deedCount2;
-        currentDeedCount = current.deedCount1 != 0 ? current.deedCount1 : current.deedCount2;
+        int oldMissionCount, currentMissionCount;
+        oldMissionCount = old.missionCount1 != 0  ? old.missionCount1 : old.missionCount2;
+        currentMissionCount = current.missionCount1 != 0 ? current.missionCount1 : current.missionCount2;
 
         long oldMissionId, currentMissionId;
         oldMissionId = old.missionId1 != 0  ? old.missionId1 : old.missionId2;
         currentMissionId = current.missionId1 != 0 ? current.missionId1 : current.missionId2;
 
-        // vars.logDebug("oldDeedCount: " + oldDeedCount);
-        // vars.logDebug("currentDeedCount: " + currentDeedCount);
+        // vars.logDebug("oldMissionCount: " + oldMissionCount);
+        // vars.logDebug("currentMissionCount: " + currentMissionCount);
         
-        if (vars.isValidDeedIncrement(oldDeedCount, currentDeedCount) || vars.isClarionCall(oldMissionId, currentMissionId))
+        if (vars.isValidCountIncrement(oldMissionCount, currentMissionCount))
             return true;
     }
 }

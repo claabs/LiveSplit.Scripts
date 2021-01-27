@@ -61,39 +61,33 @@ If the load remover is not working, you may be on an unsupported version of the 
 1. Add the address to the ASL scruot
 1. Repeat for DX12.
 
-#### Deed count
+#### Mission Count
 
-The deed count is incremented whenever a mission is completed, a borough task is completed, or during some other various events.
-A 100% file has about 500 deeds. The Any% route should have 38 at the end.
+| Active mission in route order | Mission Count |
+|-------------------------------|---------------|
+| Operation Westminster         | 1             |
+| Restart DedSec                | 2             |
+| Light a Spark                 | 3             |
+| Clarion Call                  | 4             |
+| Reporting for Duty (1)        | 5             |
+| Recruit a construction worker | 6             |
+| Reporting for Duty (2)        | 7             |
+| Digging up the past           | 8             |
 
-We can generally use deed count to track our mission progress through the run, as long as we don't improvise too much.
-
-Note that the deed count doesn't increment after Clarion Call. In that case, we need to check the mission ID to split.
-
-| Active mission in route order | Deed count |
-|-------------------------------|------------|
-| Operation Westminster         | null       |
-| Restart DedSec                | 2          |
-| Light a Spark (1)             | 3          |
-| Light a Spark (2)             | 4          |
-| Clarion Call                  | 5          |
-| Reporting for Duty            | 5          |
-| Digging up the past           | 6          |
-| The Whistleblower             | 19         |
-| Espionage 101                 | 20         |
-| Honey Trap                    | 21         |
-| The Face of the Enemy         | 36         |
-
-The numbers above are from my practice save files, but it may vary depending on what you accomplished in your practice saves. Keep in mind that a searched memory address only lasts until you exit to main menu, which means you can't use loading save files to find the address.
+This is a mission count variable. It does not persist through savegame exits, so loading into a save will set it to 1.
+To search for the variable, you must play through the intro up to *Clarion Call* multiple times.
 
 1. Launch the game into DX11 mode
 1. Attach to `WatchDogsLegion.exe`
-1. Load into a late *The Whistleblower* save and scan for a **4 Byte** with the appropriate deed count value from the above table
-1. Progress through the next two missions incrementing your search, and unchanged repeat filtering as needed.
+1. Start a new game, once you gain control, search for a **4 byte** exact value of 1
+1. Then search for unchanged value on repeat until the before end of *Operation Westminster*
+1. In the Blume spiderbot portion search for an increased value of 1, then repeat on unchanged again until before you exit the safehouse
+1. Once the *Light a Spark* objectives appear, search for an increased value of 1, then repeat on unchanged again until before you do the Camden objective
+1. Once the *Clarion Call* objective appears, search for an increased value of 1, and select the **second** of the two remaining addresses
 1. Generate a pointermap and save it
 1. Pointerscan for the address and save it
 1. Restart the game and repeat the process, comparing the pointerscan results with the previous
-1. Find a pointer with only two offsets and save it
+1. Sort the pointers by "Offset 1" and choose a pointer with only one offset and save it
 1. Repeat for DX12.
 
 #### Mission ID
