@@ -19,6 +19,16 @@ state("WatchDogsLegion", "v1.2.40")
     int missionCount2: "DuniaDemo_clang_64_dx12.dll", 0x0AFD9CA8, 0xE4; // TODO
 }
 
+state("WatchDogsLegion", "v1.3.0")
+{
+    int loading1 : "DuniaDemo_clang_64_dx11.dll", 0xAE2FE10;
+    int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xAEC0E10;
+    long missionId1 : "DuniaDemo_clang_64_dx11.dll", 0x0B0AF8D8, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90; // TODO
+    long missionId2 : "DuniaDemo_clang_64_dx12.dll", 0x0B21F420, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90; // TODO
+    int missionCount1: "DuniaDemo_clang_64_dx11.dll", 0x0AFD9CA8, 0xE4; // TODO
+    int missionCount2: "DuniaDemo_clang_64_dx12.dll", 0x0AFD9CA8, 0xE4; // TODO
+}
+
 startup
 {
     Action<string> logDebug = (text) => {
@@ -42,12 +52,6 @@ startup
     };
     vars.calcModuleHash = calcModuleHash;
 
-    Func<long, long, bool> isClarionCall = (oldId, currentId) => {
-        // Clarion Call doesn't increment the deed count, so we have this special case
-        return oldId == vars.clarionCallId && currentId == -1;
-    };
-    vars.isClarionCall = isClarionCall;
-
     Func<int, int, bool> isValidCountIncrement = (oldCount, currentCount) => {
         // The mission count increments to 1 when loading a save, so ignore that
         return oldCount + 1 == currentCount && currentCount != 1;
@@ -64,7 +68,11 @@ init
     {
         case "5048291D38DAC9E5988DC4572AE8717A":
             version = "v1.2.40";
-            vars.clarionCallId = -2314395300743091072l;
+            vars.canSplit = true;
+            break;
+        case "84C62FF86AD4656665C3FE6AC48440C2":
+            version = "v1.3.0";
+            vars.canSplit = false;
             break;
         default:
             throw new NotImplementedException("Unrecognized hash: " + hash);
@@ -79,7 +87,7 @@ isLoading
 }
 
 split {
-    if (version != "") {
+    if (version != "" && vars.canSplit) {
         // Collapse DX11/DX12 variables to one variable
         int oldMissionCount, currentMissionCount;
         oldMissionCount = old.missionCount1 != 0  ? old.missionCount1 : old.missionCount2;
