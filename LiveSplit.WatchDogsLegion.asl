@@ -13,6 +13,8 @@ state("WatchDogsLegion", "v1.2.40")
 {
     int loading1 : "DuniaDemo_clang_64_dx11.dll", 0xB0664D4;
     int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xB0F4524;
+    int etoOnIncrease1 : "DuniaDemo_clang_64_dx11.dll", 0x0B21CE60, 0x638; // TODO
+    int etoOnIncrease2 : "DuniaDemo_clang_64_dx12.dll", 0x0B2ADED0, 0x638; // TODO
     long missionId1 : "DuniaDemo_clang_64_dx11.dll", 0x0B0AF8D8, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90;
     long missionId2 : "DuniaDemo_clang_64_dx12.dll", 0x0B21F420, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90;
     int missionCount1: "DuniaDemo_clang_64_dx11.dll", 0x0AFD9CA8, 0xE4;
@@ -23,6 +25,8 @@ state("WatchDogsLegion", "v1.3.0")
 {
     int loading1 : "DuniaDemo_clang_64_dx11.dll", 0xAE2FE10;
     int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xAEC0E10;
+    int etoOnIncrease1 : "DuniaDemo_clang_64_dx11.dll", 0x0B21CE60, 0x638;
+    int etoOnIncrease2 : "DuniaDemo_clang_64_dx12.dll", 0x0B2ADED0, 0x638;
     long missionId1 : "DuniaDemo_clang_64_dx11.dll", 0x0B0AF8D8, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90; // TODO
     long missionId2 : "DuniaDemo_clang_64_dx12.dll", 0x0B21F420, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90; // TODO
     int missionCount1: "DuniaDemo_clang_64_dx11.dll", 0x0AFD9CA8, 0xE4; // TODO
@@ -52,11 +56,11 @@ startup
     };
     vars.calcModuleHash = calcModuleHash;
 
-    Func<int, int, bool> isValidCountIncrement = (oldCount, currentCount) => {
-        // The mission count increments to 1 when loading a save, so ignore that
-        return oldCount + 1 == currentCount && currentCount != 1;
+    Func<int, int, bool> isValidETOIncrease = (oldETO, currentETO) => {
+        int increase = currentETO - oldETO;
+        return increase > 0 && increase != 2000 && increase % 25 == 0;
     };
-    vars.isValidCountIncrement = isValidCountIncrement;
+    vars.isValidETOIncrease = isValidETOIncrease;
 }
 
 init
@@ -68,7 +72,7 @@ init
     {
         case "5048291D38DAC9E5988DC4572AE8717A":
             version = "v1.2.40";
-            vars.canSplit = true;
+            vars.canSplit = false;
             break;
         case "84C62FF86AD4656665C3FE6AC48440C2":
             version = "v1.3.0";
@@ -89,18 +93,14 @@ isLoading
 split {
     if (version != "" && vars.canSplit) {
         // Collapse DX11/DX12 variables to one variable
-        int oldMissionCount, currentMissionCount;
-        oldMissionCount = old.missionCount1 != 0  ? old.missionCount1 : old.missionCount2;
-        currentMissionCount = current.missionCount1 != 0 ? current.missionCount1 : current.missionCount2;
-
-        long oldMissionId, currentMissionId;
-        oldMissionId = old.missionId1 != 0  ? old.missionId1 : old.missionId2;
-        currentMissionId = current.missionId1 != 0 ? current.missionId1 : current.missionId2;
+        int oldETO, currentETO;
+        oldETO = old.etoOnIncrease1 != 0  ? old.etoOnIncrease1 : old.etoOnIncrease2;
+        currentETO = current.etoOnIncrease1 != 0 ? current.etoOnIncrease1 : current.etoOnIncrease2;
 
         // vars.logDebug("oldMissionCount: " + oldMissionCount);
         // vars.logDebug("currentMissionCount: " + currentMissionCount);
         
-        if (vars.isValidCountIncrement(oldMissionCount, currentMissionCount))
+        if (vars.isValidETOIncrease(oldETO, currentETO))
             return true;
     }
 }
