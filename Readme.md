@@ -58,7 +58,19 @@ If the load remover is not working, you may be on an unsupported version of the 
 1. Set "Memory Scan Options" to `DuniaDemo_clang_64_dx11.dll`
 1. Load into a file and scan for a **4 Byte** value of `1`
 1. Once the game loads, refine the search with a value of `0`
-1. Add the address to the ASL scruot
+1. Add the address to the ASL script
+1. Repeat for DX12.
+
+#### ETO
+
+1. Launch the game into DX11 mode
+1. Attach to `WatchDogsLegion.exe`
+1. Load into a mid-game file and search for a **4 byte** exact value of your current ETO
+1. Collect some ETO and refine your search on the new value. Don't search by decreasing your ETO; increase and decrease are different addresses
+1. Generate a pointermap and save it
+1. You should have about 4 memory addresses. Add the first one and pointerscan for it using the previously generated pointermap
+1. In the pointer paths list, click `Offset 1`. The top result should have an offset of `638`. Save that pointer path to your list
+1. Add the address to the ASL script
 1. Repeat for DX12.
 
 #### Mission Count

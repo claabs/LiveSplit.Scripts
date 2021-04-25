@@ -13,12 +13,10 @@ state("WatchDogsLegion", "v1.2.40")
 {
     int loading1 : "DuniaDemo_clang_64_dx11.dll", 0xB0664D4;
     int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xB0F4524;
-    int etoOnIncrease1 : "DuniaDemo_clang_64_dx11.dll", 0x0B21CE60, 0x638; // TODO
-    int etoOnIncrease2 : "DuniaDemo_clang_64_dx12.dll", 0x0B2ADED0, 0x638; // TODO
+    int etoOnIncrease1 : "DuniaDemo_clang_64_dx11.dll", 0x0B078530, 0x638;
+    int etoOnIncrease2 : "DuniaDemo_clang_64_dx12.dll", 0x0B106580, 0x638;
     long missionId1 : "DuniaDemo_clang_64_dx11.dll", 0x0B0AF8D8, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90;
     long missionId2 : "DuniaDemo_clang_64_dx12.dll", 0x0B21F420, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90;
-    int missionCount1: "DuniaDemo_clang_64_dx11.dll", 0x0AFD9CA8, 0xE4;
-    int missionCount2: "DuniaDemo_clang_64_dx12.dll", 0x0AFD9CA8, 0xE4; // TODO
 }
 
 state("WatchDogsLegion", "v1.3.0")
@@ -29,8 +27,6 @@ state("WatchDogsLegion", "v1.3.0")
     int etoOnIncrease2 : "DuniaDemo_clang_64_dx12.dll", 0x0B2ADED0, 0x638;
     long missionId1 : "DuniaDemo_clang_64_dx11.dll", 0x0B0AF8D8, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90; // TODO
     long missionId2 : "DuniaDemo_clang_64_dx12.dll", 0x0B21F420, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90; // TODO
-    int missionCount1: "DuniaDemo_clang_64_dx11.dll", 0x0AFD9CA8, 0xE4; // TODO
-    int missionCount2: "DuniaDemo_clang_64_dx12.dll", 0x0AFD9CA8, 0xE4; // TODO
 }
 
 startup
@@ -58,9 +54,22 @@ startup
 
     Func<int, int, bool> isValidETOIncrease = (oldETO, currentETO) => {
         int increase = currentETO - oldETO;
-        return increase > 0 && increase != 2000 && increase % 25 == 0;
+        bool isValid = increase > 0 
+            && increase != 2000 // Not sure??
+            && increase != 100 // Connie fight reward 
+            && increase % 25 == 0;
+        if (isValid) vars.logDebug("Valid ETO increase of: " + increase);
+        return isValid;
     };
     vars.isValidETOIncrease = isValidETOIncrease;
+
+    Func<long, long, bool> isValidMissionChange = (oldMissionId, currentMissionId) => {
+        bool isValid = (oldMissionId == -1275666751107959896 && currentMissionId == -1) // Operation Westminster
+            || (oldMissionId == -2314395300743091072 && currentMissionId == -1); // Clarion Call
+        if (isValid) vars.logDebug("Valid mission change. Old mission: " + oldMissionId + " Current mission: " + currentMissionId);
+        return isValid;
+    };
+    vars.isValidMissionChange = isValidMissionChange;
 }
 
 init
@@ -72,7 +81,7 @@ init
     {
         case "5048291D38DAC9E5988DC4572AE8717A":
             version = "v1.2.40";
-            vars.canSplit = false;
+            vars.canSplit = true;
             break;
         case "84C62FF86AD4656665C3FE6AC48440C2":
             version = "v1.3.0";
@@ -94,13 +103,16 @@ split {
     if (version != "" && vars.canSplit) {
         // Collapse DX11/DX12 variables to one variable
         int oldETO, currentETO;
+        long oldMissionId, currentMissionId;
         oldETO = old.etoOnIncrease1 != 0  ? old.etoOnIncrease1 : old.etoOnIncrease2;
         currentETO = current.etoOnIncrease1 != 0 ? current.etoOnIncrease1 : current.etoOnIncrease2;
+        oldMissionId = old.missionId1 != 0  ? old.missionId1 : old.missionId2;
+        currentMissionId = current.missionId1 != 0 ? current.missionId1 : current.missionId2;
 
         // vars.logDebug("oldMissionCount: " + oldMissionCount);
         // vars.logDebug("currentMissionCount: " + currentMissionCount);
         
-        if (vars.isValidETOIncrease(oldETO, currentETO))
+        if (vars.isValidETOIncrease(oldETO, currentETO) || vars.isValidMissionChange(oldMissionId, currentMissionId))
             return true;
     }
 }
