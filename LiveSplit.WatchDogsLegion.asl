@@ -54,9 +54,8 @@ startup
 
     Func<int, int, bool> isValidETOIncrease = (oldETO, currentETO) => {
         int increase = currentETO - oldETO;
-        bool isValid = increase > 0 
+        bool isValid = increase >= 300 // Random hacks and Connie fight reward 
             && increase != 2000 // Not sure??
-            && increase != 100 // Connie fight reward 
             && increase % 25 == 0;
         if (isValid) vars.logDebug("Valid ETO increase of: " + increase);
         return isValid;
