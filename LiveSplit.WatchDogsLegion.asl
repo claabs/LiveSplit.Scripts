@@ -17,6 +17,8 @@ state("WatchDogsLegion", "v1.2.40")
     int etoOnIncrease2 : "DuniaDemo_clang_64_dx12.dll", 0x0B106580, 0x638;
     long missionId1 : "DuniaDemo_clang_64_dx11.dll", 0x0B0AF8D8, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90;
     long missionId2 : "DuniaDemo_clang_64_dx12.dll", 0x0B21F420, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90;
+    int missionIncrementer1 : "DuniaDemo_clang_64_dx11.dll", 0x0B004370, 0x50;
+    int missionIncrementer2 : "DuniaDemo_clang_64_dx12.dll", 0x0B092380, 0x50;
 }
 
 state("WatchDogsLegion", "v1.3.0")
@@ -63,12 +65,27 @@ startup
     vars.isValidETOIncrease = isValidETOIncrease;
 
     Func<long, long, bool> isValidMissionChange = (oldMissionId, currentMissionId) => {
-        bool isValid = (oldMissionId == -1275666751107959896 && currentMissionId == -1) // Operation Westminster
+        bool isValid = (oldMissionId == -387354043842124764 && currentMissionId == -1) // Operation Westminster
             || (oldMissionId == -2314395300743091072 && currentMissionId == -1); // Clarion Call
         if (isValid) vars.logDebug("Valid mission change. Old mission: " + oldMissionId + " Current mission: " + currentMissionId);
         return isValid;
     };
     vars.isValidMissionChange = isValidMissionChange;
+
+    vars.lastSplitTime = null;
+	Func<bool> isNotDoubleSplit = () => {
+		bool isDoubleSplit = false;
+		if (vars.lastSplitTime != null) {
+			System.TimeSpan ts = System.DateTime.Now - vars.lastSplitTime;
+			if (ts.TotalSeconds < 20) {
+				isDoubleSplit = true;
+				vars.logDebug("Double split detected!");
+			}
+		}
+		vars.lastSplitTime = System.DateTime.Now;
+		return !isDoubleSplit;
+	};
+	vars.isNotDoubleSplit = isNotDoubleSplit;
 }
 
 init
@@ -101,17 +118,20 @@ isLoading
 split {
     if (version != "" && vars.canSplit) {
         // Collapse DX11/DX12 variables to one variable
-        int oldETO, currentETO;
-        long oldMissionId, currentMissionId;
-        oldETO = old.etoOnIncrease1 != 0  ? old.etoOnIncrease1 : old.etoOnIncrease2;
-        currentETO = current.etoOnIncrease1 != 0 ? current.etoOnIncrease1 : current.etoOnIncrease2;
-        oldMissionId = old.missionId1 != 0  ? old.missionId1 : old.missionId2;
-        currentMissionId = current.missionId1 != 0 ? current.missionId1 : current.missionId2;
+        // int oldETO, currentETO;
+        int oldMissionIncrementer, currentMissionIncrementer;
+        // long oldMissionId, currentMissionId;
+        // oldETO = old.etoOnIncrease1 != 0  ? old.etoOnIncrease1 : old.etoOnIncrease2;
+        // currentETO = current.etoOnIncrease1 != 0 ? current.etoOnIncrease1 : current.etoOnIncrease2;
+        // oldMissionId = old.missionId1 != 0  ? old.missionId1 : old.missionId2;
+        // currentMissionId = current.missionId1 != 0 ? current.missionId1 : current.missionId2;
+        oldMissionIncrementer = old.missionIncrementer1 != 0 ? old.missionIncrementer1 : old.missionIncrementer2;
+        currentMissionIncrementer = current.missionIncrementer1 != 0 ? current.missionIncrementer1 : current.missionIncrementer2;
 
         // vars.logDebug("oldMissionCount: " + oldMissionCount);
         // vars.logDebug("currentMissionCount: " + currentMissionCount);
         
-        if (vars.isValidETOIncrease(oldETO, currentETO) || vars.isValidMissionChange(oldMissionId, currentMissionId))
+        if (oldMissionIncrementer != currentMissionIncrementer && vars.isNotDoubleSplit())
             return true;
     }
 }

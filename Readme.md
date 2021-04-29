@@ -61,6 +61,93 @@ If the load remover is not working, you may be on an unsupported version of the 
 1. Add the address to the ASL script
 1. Repeat for DX12.
 
+#### Mission Incrementer
+
+This variable seems to increment at certain key points during and after missions. Double split protection is needed because it very often increments by 2 or 3.
+
+| End of mission                  | Amount | Reference |
+|---------------------------------|--------|-----------|
+| None                            | 0      |           |
+| Operation Westminster           | 1      | 2         |
+| Restart DedSec                  | 2      | 4         |
+| Light a Spark                   |        |           |
+| - Reach Royal Courts of Justice | 1      | 5         |
+| - [Misson End]                  | 1      | 6         |
+| Clarion Call                    | 2      | 8         |
+| Reporting for Duty              |        |           |
+| - Reach Construction Workers    | 2      | 10        |
+| - Recruitment Complete          | -1     | 9         |
+| - Midway on drive               | 1      | 10        |
+| - Reach final download          | 1      | 11        |
+| - [Misson End]                  | 1      | 12        |
+| Digging up the past             |        |           |
+| - TOAN Bombing Site             | 1      |           |
+| - [Misson End]                  | 1      |           |
+| Lost in the process             |        |           |
+| - Talk to Albion contact        | 1      |           |
+| - [Misson End]                  | 1      |           |
+| Clan Kelley's New Export        |        |           |
+| - Reach Southwark Incinerator   | 1      |           |
+| - [Misson End]                  | 1      |           |
+| Bloody Mary Kelley              | 2      |           |
+| Gap in the Armour               | 1      |           |
+| Initiate Sequence (1)           |        |           |
+| - Hack ctOS Hub                 | 1      |           |
+| - Walkie Talkie Club            | 1      |           |
+| Inside Albion                   | 1      |           |
+| Initiate Sequence (2)           |        |           |
+| - Travel to St James??          | 2/3?   |           |
+| - [Misson End]                  | 1      |           |
+| 404 Not Found                   |        |           |
+| - Travel to Old Kent            | 2      |           |
+| - [Misson End]                  | 1      |           |
+| Coming Home                     | 1      |           |
+| Into the Void (Late Nowt Call)  | 1      |           |
+| Stealing Schemes                | 2      |           |
+| In The Belly of the Beast       | 2      |           |
+| The Whistleblower               |        |           |
+| - Reach meeting point           | 1      |           |
+| - Obtain Key?                   | 1      |           |
+| - [Misson End]                  | 1      |           |
+| Espionage 101                   | 1      |           |
+| Honey Trap                      |        |           |
+| - Travel to Embankment          | 1      |           |
+| - [Mission End]                 | 1      |           |
+| Hunting Zero-Day                | 1      | 36        |
+| Smoking Gun                     |        |           |
+| - Swap Operatives?              | 2?     | 38        |
+| - [Mission End]                 | 1      | 39        |
+| Kill Box                        |        |           |
+| - Arrive at operative           | 1      | 40        |
+| - [Mission End]                 | 1      | 41        |
+| The Malik Dossier               | 2      | 43        |
+| Crashing the Auction            |        |           |
+| - Reach Hackney Baths           | 1      | 44        |
+| - [Mission End]                 | 2      | 46        |
+| Market Closing                  | 1      | 47        |
+| Falling from Grace              | 0      | 47        |
+| Barbarians at the Gate          | 2      | 49        |
+| Restoking the Fire              | 2      | 51        |
+| Nigel's Close Shave             | 2      | 54        |
+| Defanging the Flock             | 1      | 55        |
+| #Justice4Claire                 | 2      | 57        |
+| London's Protectors             | 1      | 58        |
+| DedSec Party                    | 1      | 59        |
+| The Face of the Enemy           | 1      | 60        |
+| Hard Reset (after credits)      | 1      | 61        |
+
+1. Launch the game into DX11 mode
+1. Attach to `WatchDogsLegion.exe`
+1. Search on the main menu for `0`
+1. Start a new file and scan for `1` when you gain control
+1. At the start of the Blume spiderbot section, scan for `2`
+1. After you fast travel to Embankment after Restart DedSec, scan for `4`
+1. By now you should have it filtered down. If not, it will increment according to the table above
+1. Generate a pointermap
+1. Pointerscan the address, click the `Offset 1` header, and add the two pointers with an offset of `50`
+1. One of the two pointers has a value (`0`) quicker than the other when you boot the game up, use that one
+1. Repeat for DX12.
+
 #### ETO
 
 1. Launch the game into DX11 mode
@@ -106,14 +193,15 @@ To search for the variable, you must play through the intro up to *Clarion Call*
 
 Finding the mission ID values from scratch is a pain, so hopefull the following ones stick around through updates:
 
-| Selected mission     | Mission ID           |
-|----------------------|----------------------|
-| None                 | -1                   |
-| Clarion Call         | -2314395300743091072 |
-| Initiate Sequence    | -1860909611898991633 |
-| Inside Albion        | -1860909419468514552 |
-| The Whistleblower    | -1860909604697338304 |
-| Crashing the Auction | -1860909603611013565 |
+| Selected mission      | Mission ID           |
+|-----------------------|----------------------|
+| None                  | -1                   |
+| Operation Westminster | -387354043842124764  |
+| Clarion Call          | -2314395300743091072 |
+| Initiate Sequence     | -1860909611898991633 |
+| Inside Albion         | -1860909419468514552 |
+| The Whistleblower     | -1860909604697338304 |
+| Crashing the Auction  | -1860909603611013565 |
 
 1. Launch the game into DX11 mode
 1. Attach to `WatchDogsLegion.exe`
