@@ -37,6 +37,12 @@ state("WatchDogsLegion", "v1.4.5")
     int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xB4B8154;
 }
 
+state("WatchDogsLegion", "v1.5.0")
+{
+    int loading1 : "DuniaDemo_clang_64_dx11.dll", 0xB3C25F4;
+    int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xB458614;
+}
+
 startup
 {
     Action<string> logDebug = (text) => {
@@ -112,7 +118,11 @@ init
 	case "038A5206E1ED75474323064FE7BF403F":
 	    version = "v1.4.5";
             vars.canSplit = false;
-            break; 
+            break;
+	case "21295E34CFFC0085843003E039C6FCE3":
+	    version = "v1.5.0";
+            vars.canSplit = false;
+            break;
         default:
             throw new NotImplementedException("Unrecognized hash: " + hash);
             break;
