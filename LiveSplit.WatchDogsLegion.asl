@@ -43,6 +43,12 @@ state("WatchDogsLegion", "v1.5.0")
     int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xB458614;
 }
 
+state("WatchDogsLegion", "v1.5.6")
+{
+    int loading1 : "DuniaDemo_clang_64_dx11.dll", 0xB465164;
+    int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xB4F91F4;
+}
+
 startup
 {
     Action<string> logDebug = (text) => {
@@ -121,6 +127,10 @@ init
             break;
 	case "21295E34CFFC0085843003E039C6FCE3":
 	    version = "v1.5.0";
+            vars.canSplit = false;
+            break;
+	case "028ABAE67F2725010F9D7CE0296FA63C":
+	    version = "v1.5.6";
             vars.canSplit = false;
             break;
         default:
