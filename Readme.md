@@ -15,6 +15,8 @@ Generally, progressing through the campaign missions should trigger the autospli
 
 A split is triggered whenever the selected mission ID changes, or is deselected. There are points in the run where you press "J" to quick swap missions, or open the mission menu to manually select a mission. You should expect a split to trigger there. Sometimes there are mission swaps that aren't routed in, so make sure you know your "Undo Split" hotkey to fix any unintended splits.
 
+Autosplitting only works on verison 1.2.40 (barely).
+
 ### Advanced Options
 
 When the "Split for recruitment missions" option is disabled, a transition to or from a recruitment mission will be ignored.
@@ -28,12 +30,6 @@ This means if "Split for recruitment missions" is **enabled**, you should have 3
 If "Split for recruitment missions" is **disabled**, you should have 1 split in *Reporting for Duty*.
 
 This option doesn't apply for the EPC Albion recruit, as it doesn't force switch you to a recruitment mission.
-
-## Supported Versions
-
-* 1.2.40
-
-If you want to downgrade version, you can find a link to past patches in the Discord.
 
 ## Troubleshooting
 

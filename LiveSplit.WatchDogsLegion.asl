@@ -1,6 +1,6 @@
 /* IMPORTANT:
-You need to add -BattlEyeLauncher to your launch options (in uPlay/Epic Games/shortcut) so the memory can be read.
-This disables BattlEye (and online MP).
+You need to add -BattlEyeLauncher to your launch options (in Ubisoft Connect/Epic Games/Steam shortcut) so the memory can be read.
+This disables BattlEye anti-cheat.
 See Readme.md for more information.
 */
 
@@ -25,10 +25,6 @@ state("WatchDogsLegion", "v1.3.0")
 {
     int loading1 : "DuniaDemo_clang_64_dx11.dll", 0xAE2FE10;
     int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xAEC0E10;
-    int etoOnIncrease1 : "DuniaDemo_clang_64_dx11.dll", 0x0B21CE60, 0x638;
-    int etoOnIncrease2 : "DuniaDemo_clang_64_dx12.dll", 0x0B2ADED0, 0x638;
-    long missionId1 : "DuniaDemo_clang_64_dx11.dll", 0x0B0AF8D8, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90; // TODO
-    long missionId2 : "DuniaDemo_clang_64_dx12.dll", 0x0B21F420, 0x410, 0x3D8, 0x3F8, 0x3D8, 0x3E0, 0x3D8, 0xF90; // TODO
 }
 
 state("WatchDogsLegion", "v1.4.5")
@@ -47,6 +43,12 @@ state("WatchDogsLegion", "v1.5.6")
 {
     int loading1 : "DuniaDemo_clang_64_dx11.dll", 0xB465164;
     int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xB4F91F4;
+}
+
+state("WatchDogsLegion", "v1.5.6-steam")
+{
+    int loading1 : "DuniaDemo_clang_64_dx11.dll", 0xB274020;
+    int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xB309020;
 }
 
 startup
@@ -121,18 +123,22 @@ init
             version = "v1.3.0";
             vars.canSplit = false;
             break;
-	case "038A5206E1ED75474323064FE7BF403F":
-	    version = "v1.4.5";
-            vars.canSplit = false;
-            break;
-	case "21295E34CFFC0085843003E039C6FCE3":
-	    version = "v1.5.0";
-            vars.canSplit = false;
-            break;
-	case "028ABAE67F2725010F9D7CE0296FA63C":
-	    version = "v1.5.6";
-            vars.canSplit = false;
-            break;
+        case "038A5206E1ED75474323064FE7BF403F":
+            version = "v1.4.5";
+                vars.canSplit = false;
+                break;
+        case "21295E34CFFC0085843003E039C6FCE3":
+            version = "v1.5.0";
+                vars.canSplit = false;
+                break;
+        case "028ABAE67F2725010F9D7CE0296FA63C":
+            version = "v1.5.6";
+                vars.canSplit = false;
+                break;
+        case "5A08AC162D338BC128CAF96A2F2FEE34":
+            version = "v1.5.6-steam";
+                vars.canSplit = false;
+                break;
         default:
             throw new NotImplementedException("Unrecognized hash: " + hash);
             break;
