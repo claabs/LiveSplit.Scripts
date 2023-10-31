@@ -51,6 +51,13 @@ state("WatchDogsLegion", "v1.5.6-steam")
     int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xB309020;
 }
 
+// For 1.6.3, uplay and steam have the same memory addresses
+state("WatchDogsLegion", "v1.6.3")
+{
+    int loading1 : "DuniaDemo_clang_64_dx11.dll", 0xB286FE0;
+    int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xB31BFE0;
+}
+
 startup
 {
     Action<string> logDebug = (text) => {
@@ -73,7 +80,7 @@ startup
         return hash;
     };
     vars.calcModuleHash = calcModuleHash;
-
+    
     Func<int, int, bool> isValidETOIncrease = (oldETO, currentETO) => {
         int increase = currentETO - oldETO;
         bool isValid = increase >= 300 // Random hacks and Connie fight reward 
@@ -111,9 +118,9 @@ startup
 init
 {
     // vars.logDebug("modules: " + String.Join(", ", modules.Select(m=> m.ModuleName + " : " + m.BaseAddress.ToString() + " : " + m.EntryPointAddress.ToString())));
-    ProcessModuleWow64Safe module = modules.Single(x => String.Equals(x.ModuleName, "WatchDogsLegion.exe", StringComparison.OrdinalIgnoreCase));
-    string hash = vars.calcModuleHash(module);
-    switch (hash)
+    ProcessModuleWow64Safe exeModule = modules.Single(x => String.Equals(x.ModuleName, "WatchDogsLegion.exe", StringComparison.OrdinalIgnoreCase));
+    string exeHash = vars.calcModuleHash(exeModule);
+    switch (exeHash)
     {
         case "5048291D38DAC9E5988DC4572AE8717A":
             version = "v1.2.40";
@@ -125,22 +132,53 @@ init
             break;
         case "038A5206E1ED75474323064FE7BF403F":
             version = "v1.4.5";
-                vars.canSplit = false;
-                break;
+            vars.canSplit = false;
+            break;
         case "21295E34CFFC0085843003E039C6FCE3":
             version = "v1.5.0";
-                vars.canSplit = false;
-                break;
+            vars.canSplit = false;
+            break;
         case "028ABAE67F2725010F9D7CE0296FA63C":
-            version = "v1.5.6";
-                vars.canSplit = false;
-                break;
+            // uplay 1.5.6 and 1.6.3 use the same exe, so we use dunia DLL size to pick the right version
+            ProcessModuleWow64Safe duniaModule = modules.Single(x => x.ModuleName.StartsWith("DuniaDemo_clang_64_dx", StringComparison.OrdinalIgnoreCase));
+            int duniaModuleSize = duniaModule.ModuleMemorySize;
+            vars.logDebug("duniaModuleSize: " + duniaModuleSize);
+            switch(duniaModuleSize)
+            {
+                case 583057408:
+                    // dx11
+                    vars.canSplit = false;
+                    version = "v1.5.6";
+                    break;
+                case 618889216:
+                    // dx12
+                    vars.canSplit = false;
+                    version = "v1.5.6";
+                    break;
+                case 592404480:
+                    vars.canSplit = false;
+                    version = "v1.6.3"; // dx11
+                    break;
+                case 555307008:
+                    vars.canSplit = false;
+                    version = "v1.6.3"; // dx12
+                    break;
+                default:
+                    throw new NotImplementedException("Unrecognized duniaModuleSize: " + duniaModuleSize);
+                    break;
+            }
+            break;
         case "5A08AC162D338BC128CAF96A2F2FEE34":
             version = "v1.5.6-steam";
-                vars.canSplit = false;
-                break;
+            vars.canSplit = false;
+            break;
+        case "5DAB2D2F973BA4C35BEA0769F8BD7913":
+            // steam 1.6.3 exe
+            version = "v1.6.3";
+            vars.canSplit = false;
+            break;
         default:
-            throw new NotImplementedException("Unrecognized hash: " + hash);
+            throw new NotImplementedException("Unrecognized hash: " + exeHash);
             break;
     }
 }
