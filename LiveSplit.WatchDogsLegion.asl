@@ -54,8 +54,8 @@ state("WatchDogsLegion", "v1.5.6-steam")
 // For 1.6.3, uplay and steam have the same memory addresses
 state("WatchDogsLegion", "v1.6.3")
 {
-    int loading1 : "DuniaDemo_clang_64_dx11.dll", 0xB286FE0;
-    int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xB31BFE0;
+    int loading1 : "DuniaDemo_clang_64_dx11.dll", 0xB46C234;
+    int loading2 : "DuniaDemo_clang_64_dx12.dll", 0xB501274;
 }
 
 startup

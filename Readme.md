@@ -54,6 +54,7 @@ If the load remover is not working, you may be on an unsupported version of the 
 1. Set "Memory Scan Options" to `DuniaDemo_clang_64_dx11.dll`
 1. Load into a file and scan for a **4 Byte** value of `1`
 1. Once the game loads, refine the search with a value of `0`
+1. Refine the search by loading into the Blume Tower spiderbot mission after Operation Westminster
 1. Add the address to the ASL script
 1. Repeat for DX12.
 
