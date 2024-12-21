@@ -264,18 +264,12 @@ update
 			vars.detectLineChange(old.lineIdIdx1, current.lineIdIdx1, vars.line1Stopwatch);
 		}
     
-     if (old.LineID1 != current.LineID1)
-		print("LineID: " + vars.lineID1);	
-    if (old.LineID2 != current.LineID2)
-		print("LineID: " + vars.lineID2);
-    
-
 }
 
 
 start
 {
-    return current.LineID1 == 1136464 || current.LineID2 == 1136464;    //Legion Main Story Start
+    return current.LineID1 == 1136464 || current.LineID2 == 1136464;    //Legion Main Story Start, add 2 secs to starting timer
    
     return current.LineID1 == 1176641 || current.LineID2 == 1176641; 	//Add 7.150 seconds to starting timer for Bloodline
     
@@ -287,14 +281,32 @@ split {
         
         	if(current.lineIdIdx0 == 1068605 || current.lineIdIdx1 == 1068605)       //Operation Westminster
 			{
-				vars.splitTimeOffset = 3.33;
+				vars.splitTimeOffset = 0.1;
 				vars.stopwatch.Restart();
 			}
 
 		if(current.LineID1 == 1193809 && current.loading1 > 0 || current.LineID2 == 1193809 && current.loading2 > 0)       //Restart Dedsec
 			        return vars.isNotDoubleSplit();
+		
+		if(current.etoOnIncrease1 == old.etoOnIncrease1 + 750 || current.etoOnIncrease2 == old.etoOnIncrease2 + 750)  //Reporting for Duty, Digging Up the Past, Inside Albion, Stealing Schemes, Market Closing, Hunting Zero-Day, Restoking the Fire, Nigel's Close Shave, Defanging the Flock, Justice4Claire
+				return vars.isNotDoubleSplit();
+		
+		if(current.etoOnIncrease1 == old.etoOnIncrease1 + 875 || current.etoOnIncrease2 == old.etoOnIncrease2 + 875)  //Lost in the Process, Bloody Mary Kelley, 404 Not Found, Smoking Gun
+				return vars.isNotDoubleSplit();
 
-		if(current.etoOnIncrease1 > old.etoOnIncrease1 + 400 || current.etoOnIncrease2 > old.etoOnIncrease2 + 400)  
+		if(current.etoOnIncrease1 == old.etoOnIncrease1 + 1000 || current.etoOnIncrease2 == old.etoOnIncrease2 + 1000)  //Clan Kelley's New Export, The Belly of the Beast, Coming Home, Crashing the Auction, The Whistleblower, Honey Trap, Hypocritical Oath (Bloodline), Protest Punks (Bloodline)
+				return vars.isNotDoubleSplit();
+
+		if(current.etoOnIncrease1 == old.etoOnIncrease1 + 700 || current.etoOnIncrease2 == old.etoOnIncrease2 + 700)  //Gap in the Armour, Espionage 101, Kill Box
+				return vars.isNotDoubleSplit();
+
+		if(current.etoOnIncrease1 == old.etoOnIncrease1 + 3000 || current.etoOnIncrease2 == old.etoOnIncrease2 + 3000)  //Initiate Sequence, Resistance Business (Bloodline)
+				return vars.isNotDoubleSplit();
+
+		if(current.etoOnIncrease1 == old.etoOnIncrease1 + 1500 || current.etoOnIncrease2 == old.etoOnIncrease2 + 1500)  //Into the Void, Falling from Grace, Malik Dossier, London's Protectors, The Face of the Enemy, Rempart Rempage (Bloodline)
+				return vars.isNotDoubleSplit();
+
+		if(current.etoOnIncrease1 == old.etoOnIncrease1 + 650 || current.etoOnIncrease2 == old.etoOnIncrease2 + 650)  //Dedsec Party
 				return vars.isNotDoubleSplit();
 
 		if(current.lineIdIdx0 == 1195578 || current.lineIdIdx1 == 1195578)       //Acquisition Target
